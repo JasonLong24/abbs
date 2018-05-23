@@ -45,13 +45,38 @@ function list() {
     for ((n=1;n<$dirCount;n++))
     do
       dirname=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
-      filename=$(ls -p --ignore='*~' $dirname | tr -d '.md' | sed 's/^/  | /')
-      echo $blue$dirname$reset
-      echo -e "$filename"
+      filename=$(ls -p --ignore='*~' $dirname | tr -d '.md' | sed 's/^/\t   | /' )
+      echo -e "$n\t$blue$dirname$reset \n$filename" 
     done
-  else
+else
     echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
   fi
+}
+
+function delete() {
+if [[ -f .blog ]]; then
+  list
+  printf "\n"
+  read -p 'Pick the directory or the directory of the file you want to delete. ' delHead
+  printf "\n" && printf "\n"
+
+  delDir=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$delHead)
+  delFile=$(ls -p --ignore='*~' $delDir | tr -d '.md' | sed 's/^/\t   | /' )
+
+  echo -e "\t$blue$delDir$reset\n$delFile" | nl
+  read -p 'Select the file or directory to delete. ' selection
+
+    if [[ $selection = 1  ]]; then
+      rm -rf $delDir 
+      echo "Deleted $delDir... "
+    else
+      file=$(ls -lp --ignore='*~' $delDir | awk NR==$selection'{print $9}' sel=$selection) 
+      rm $delDir/$file
+      echo "Deleted $file... " 
+    fi
+else
+  echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
+fi
 }
 
 function compile() {
