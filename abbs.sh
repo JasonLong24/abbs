@@ -48,35 +48,45 @@ function list() {
       filename=$(ls -p --ignore='*~' $dirname | tr -d '.md' | sed 's/^/\t   | /' )
       echo -e "$n\t$blue$dirname$reset \n$filename" 
     done
-else
+  else
     echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
   fi
 }
 
 function delete() {
-if [[ -f .blog ]]; then
-  list
-  printf "\n"
-  read -p 'Pick the directory or the directory of the file you want to delete. ' delHead
-  printf "\n" && printf "\n"
+  if [[ -f .blog ]]; then
+    if [[ $1 = "-a" ]];then 
+      list
+      printf "\n"
+      read -p 'Pick the directory or the directory of the file you want to delete. ' delHead
+      printf "\n" && printf "\n"
 
-  delDir=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$delHead)
-  delFile=$(ls -p --ignore='*~' $delDir | tr -d '.md' | sed 's/^/\t   | /' )
+      delDir=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$delHead)
+      delFile=$(ls -p --ignore='*~' $delDir | tr -d '.md' | sed 's/^/\t   | /' )
 
-  echo -e "\t$blue$delDir$reset\n$delFile" | nl
-  read -p 'Select the file or directory to delete. ' selection
+      echo -e "\t$blue$delDir$reset\n$delFile" | nl
+      read -p 'Select the file or directory to delete. ' selection
 
-    if [[ $selection = 1  ]]; then
-      rm -rf $delDir 
-      echo "Deleted $delDir... "
-    else
-      file=$(ls -lp --ignore='*~' $delDir | awk NR==$selection'{print $9}' sel=$selection) 
-      rm $delDir/$file
-      echo "Deleted $file... " 
+        if [[ $selection = 1  ]]; then
+          rm -rf $delDir 
+          echo "Deleted $delDir... "
+        else
+          file=$(ls -lp --ignore='*~' $delDir | awk NR==$selection'{print $9}' sel=$selection) 
+          rm $delDir/$file
+          echo "Deleted $file... " 
+        fi
+
+    elif [[ $1 = "-f" ]]; then
+      echo -e "All Entries.\n"
+      files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
+      echo -e "$files"
+      printf '\n'
+      read -p 'Pick the file you want to delete. ' filePick
+      echo $filePick
     fi
-else
-  echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
-fi
+  else
+    echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
+  fi
 }
 
 function compile() {
