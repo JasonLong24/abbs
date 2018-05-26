@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 path=$(pwd)
+files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
+directories=$(find . -type d | tr -d "./" | grep -vwE build | nl -w2)
 
 reset=$(tput sgr0)
 red=$(tput setaf 1) 
@@ -19,9 +21,9 @@ function newBlog() {
   cd $path/$bName
 }
 
-function newFile() {
+function newDir() {
   if [[ -f .blog ]]; then
-    read -p 'File name? ' fName
+    read -p 'Dir name? ' fName
     mkdir -p $path/$fName 
   else
     echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
@@ -78,14 +80,35 @@ function delete() {
 
     elif [[ $1 = "-f" ]]; then
       echo -e "All Entries.\n"
-      files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
       echo -e "$files"
       printf '\n'
       read -p 'Pick the file you want to delete. ' filePick
-      echo $filePick
+
+      rm $(echo "$files" | awk NR==$filePick'{print $2}')
+      echo Deleted $(echo "$files" | awk NR==$filePick'{print $2}')...
+
+    elif [[ $1 = "-d" ]]; then
+      echo -e "All Directories."
+      echo -e "$directories"
+      printf '\n'
+      read -p 'Pick the directory you want to delete. ' dirPick
+
+      rm -rf $(echo "$directories" | awk NR==$dirPick+1'{print $2}')
+      echo Deleted $(echo "$directories" | awk NR==$dirPick+1'{print $2}')...
     fi
   else
     echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
+  fi
+}
+
+function edit() {
+  if [[ -f .blog ]]; then
+    echo -e "All Entries.\n"
+    echo -e "$files"
+    printf '\n'
+    read -p 'Pick the file you want to edit. ' filePick
+
+    /usr/bin/time --format='\nEdit Time: %es' $EDITOR $(echo "$files" | awk NR==$filePick'{print $2}')
   fi
 }
 
