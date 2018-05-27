@@ -116,10 +116,22 @@ function compile() {
   if [[ -f .blog ]]; then
     if [[ -d build ]]; then
       rm -f $path/build/*.html
+      rm -f $path/build/*.css
     else
       mkdir $path/build
     fi
-    
+
+    if [[ $1 = "-s" ]]; then
+      cp $2 $path/build/style.css 
+    fi
+
+    read -p "Do you want to generate an index.html file? (y/n)" -n 1;
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      touch build/index.html
+      echo -e "<link rel="stylesheet" href="style.css">" >> build/index.html
+      echo -e "<ul>" >> build/index.html
+    fi
+
     dirCount=$(echo */ | wc | awk '{print $2}' | tr -d ' ')
     echo $fileCount
     for ((n=1;n<$dirCount;n++))
@@ -128,9 +140,32 @@ function compile() {
       filename=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
       echo $filename
       pandoc -f markdown -t html5 -o build/$filename.html $filename/*.md -c style.css
+      
+      if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "\t <li><a href="$filename.html">"$filename"</a></li>" >> build/index.html
+      fi
     done
-    
+
+    if [[ -f build/index.html ]]; then
+      echo "</ul>" >> build/index.html 
+    fi
+
   fi
+}
+
+function help() {
+  echo -e Usage: abbs [COMMAND] [OPTION]"\n"
+  echo -e "newBlog              Creates a new Blog directory and initializes it."
+  echo -e "newDir               Creates a new sub-blog direcotry that is compiled into its own html file."
+  echo -e "newEntry             Creates a new Blog entry in the directory you are in."
+  echo -e "list                 A Tree layout for your current blog setup."
+  echo -e "delete [OPTION]      Easy way to delete Entries, Blogs, or Directories."
+  echo -e "    -f               Lists only files."
+  echo -e "    -d               Lists only directories."
+  echo -e "    -a               Lists everything in your blog."
+  echo -e "edit                 Easy way to edit files in blog setup."
+  echo -e "compile [OPTION]     Compiles your blog into the build directory of the project."
+  echo -e "    -s               Path to a style sheet anywhere on your computer."
 }
 
 "$@"
