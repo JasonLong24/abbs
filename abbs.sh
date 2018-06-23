@@ -136,14 +136,32 @@ function compile() {
     echo $fileCount
     for ((n=1;n<$dirCount;n++))
     do
-      echo Test $n
       filename=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
-      echo $filename
+      echo Compiling... $filename
       pandoc -f markdown -t html5 -o build/$filename.html $filename/*.md -c style.css
-      
+      #echo -e "<li class="TOC"><a href="http://google.com">$filename</a></li>\n$(cat build/$filename.html)" > $filename.html
+
       if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo -e "\t <li><a href="$filename.html">"$filename"</a></li>" >> build/index.html
       fi
+
+      tocCount=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | wc -l)
+      sectionCount=""
+      count=1
+      for ((i=1;i<=$tocCount;i++)); do
+        tocItems=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | awk FNR==$i | awk '{$1=$1};1')
+        echo $(echo $tocItems | head -c1)
+        if [[ $(echo $tocItems | head -c1) =~ ^[0-9]+$ ]]; then
+           output="<li class=\"toc\"><a href=\"#section$sectionCount\">$tocItems</a></li>"
+           sed -i "1s@^@$output\n@" build/$filename.html 
+           sectionCount="-"$count
+           count=$((count+1))
+         else
+           output="<li class=\"toc\"><a href=\"#$(echo $tocItems | tr '[:upper:]' '[:lower:]' | tr ' ' '-')\">$tocItems</a></li>"
+           echo $output
+           sed -i "1s@^@$output\n@" build/$filename.html 
+         fi
+      done
     done
 
     if [[ -f build/index.html ]]; then
