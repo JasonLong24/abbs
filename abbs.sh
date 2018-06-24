@@ -129,7 +129,9 @@ function compile() {
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       touch build/index.html
       echo -e "<link rel="stylesheet" href="style.css">" >> build/index.html
-      echo -e "<ul>" >> build/index.html
+      echo -e "<div class=\"toc-container\">" >> build/index.html
+      echo -e "<p class=\"toc-title\">Blogs</p>" >> build/index.html
+      echo -e "<ul class=\"toc\">" >> build/index.html
     fi
 
     dirCount=$(echo */ | wc | awk '{print $2}' | tr -d ' ')
@@ -139,7 +141,6 @@ function compile() {
       filename=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
       echo Compiling... $filename
       pandoc -f markdown -t html5 -o build/$filename.html $filename/*.md -c style.css
-      #echo -e "<li class="TOC"><a href="http://google.com">$filename</a></li>\n$(cat build/$filename.html)" > $filename.html
 
       if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo -e "\t <li><a href="$filename.html">"$filename"</a></li>" >> build/index.html
@@ -148,24 +149,28 @@ function compile() {
       tocCount=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | wc -l)
       sectionCount=""
       count=1
+      sed -i '1s@^@</div>\n@' build/$filename.html
+      sed -i '1s@^@</ul>\n@' build/$filename.html
       for ((i=1;i<=$tocCount;i++)); do
         tocItems=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | awk FNR==$i | awk '{$1=$1};1')
-        echo $(echo $tocItems | head -c1)
         if [[ $(echo $tocItems | head -c1) =~ ^[0-9]+$ ]]; then
-           output="<li class=\"toc\"><a href=\"#section$sectionCount\">$tocItems</a></li>"
+           output="<li class=\"toc-items\"><a href=\"#section$sectionCount\">$i\t$tocItems</a></li>"
            sed -i "1s@^@$output\n@" build/$filename.html 
            sectionCount="-"$count
            count=$((count+1))
          else
-           output="<li class=\"toc\"><a href=\"#$(echo $tocItems | tr '[:upper:]' '[:lower:]' | tr ' ' '-')\">$tocItems</a></li>"
-           echo $output
+           output="<li class=\"toc-items\"><a href=\"#$(echo $tocItems | tr '[:upper:]' '[:lower:]' | tr ' ' '-')\">$i\t$tocItems</a></li>"
            sed -i "1s@^@$output\n@" build/$filename.html 
          fi
       done
+      sed -i '1s@^@<ul class=\"toc\">\n@' build/$filename.html
+      sed -i '1s@^@<p class=\"toc-title\">Contents</p>\n@' build/$filename.html
+      sed -i '1s@^@<div class=\"toc-container\">\n@' build/$filename.html
     done
 
     if [[ -f build/index.html ]]; then
       echo "</ul>" >> build/index.html 
+      echo "</div>" >> build/index.html 
     fi
 
   fi
