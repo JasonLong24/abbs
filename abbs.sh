@@ -4,14 +4,14 @@ path=$(pwd)
 files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
 directories=$(find . -type d | tr -d "./" | grep -vwE build | nl -w2)
 
-reset=$(tput sgr0)
-red=$(tput setaf 1) 
-green=$(tput setaf 2)
-yellow=$(tput setaf 3)
-blue=$(tput setaf 4)
-purple=$(tput setaf 5)
-cyan=$(tput setaf 6) 
-white=$(tput setaf 7)
+reset=$(tput sgr0 2>/dev/null)
+red=$(tput setaf 1 2>/dev/null) 
+green=$(tput setaf 2 2>/dev/null)
+yellow=$(tput setaf 3 2>/dev/null)
+blue=$(tput setaf 4 2>/dev/null)
+purple=$(tput setaf 5 2>/dev/null)
+cyan=$(tput setaf 6 2>/dev/null) 
+white=$(tput setaf 7 2>/dev/null)
 
 function newBlog() {
   read -p 'Blog name? ' bName
@@ -37,6 +37,20 @@ function newEntry() {
     $EDITOR $path/$eName.md
   else
     echo -e 'This is not a blog directory.\nUse newBlog to initialize a blog.'
+  fi
+}
+
+function newPost() {
+  if [[ -f .blog ]]; then
+    echo -e "$files" 
+    read -p "Where do you want to add a post? " postFile
+    echo "<div class=\"post\">" >> $(echo "$files" | awk NR==$postFile'{print $2}')
+    echo "Header: " && read head 
+    echo -e "# "$head"\n" >> $(echo "$files" | awk NR==$postFile'{print $2}')
+    echo "Body: " && body=$(cat) 
+    echo -e "$body" >> $(echo "$files" | awk NR==$postFile'{print $2}')
+    echo "</div>" >> $(echo "$files" | awk NR==$postFile'{print $2}')
+    abbs compile -s style.css
   fi
 }
 
