@@ -3,6 +3,7 @@
 path=$(pwd)
 files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
 directories=$(find . -type d | tr -d "./" | grep -vwE build | nl -w2)
+title=$(cat .blog | cut -d\  -f3)
 
 reset=$(tput sgr0 2>/dev/null)
 red=$(tput setaf 1 2>/dev/null) 
@@ -15,9 +16,11 @@ white=$(tput setaf 7 2>/dev/null)
 
 function newBlog() {
   read -p 'Blog name? ' bName
-  echo $bName
+  echo Created... $bName
   mkdir -p $path/$bName
   touch $path/$bName/.blog
+  read -p 'Blog title? ' bTitle
+  echo "title=\""$bTitle"\"">> $path/$bName/.blog
   cd $path/$bName
 }
 
