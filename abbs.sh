@@ -163,9 +163,11 @@ function compile() {
            sed -i "1s@^@$output\n@" build/$filename.html 
          fi
       done
-      sed -i '1s@^@<ul class=\"toc\">\n@' build/$filename.html
+      sed -i '1s@^@<ul id=\"toc\">\n@' build/$filename.html
+      sed -i '1s@^@<input type=\"text\" id=\"contentsFilter\" onkeyup=\"filter()\" placeholder=\"Search Posts... \">\n@' build/$filename.html
       sed -i '1s@^@<p class=\"toc-title\">Contents</p>\n@' build/$filename.html
       sed -i '1s@^@<div class=\"toc-container\">\n@' build/$filename.html
+      sed -i '1s@^@<script charset=\"utf-8\" src=\"filter.js\"></script>\n@' build/$filename.html
     done
 
     if [[ -f build/index.html ]]; then
