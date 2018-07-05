@@ -28,6 +28,7 @@ See example
   edit                 Easy way to edit files in blog setup.
   compile [OPTION]     Compiles your blog into the build directory of the project.
       -s               Path to a style sheet anywhere on your computer.
+      -d               Path to directory of theme.
 ```
 
 ## Update
