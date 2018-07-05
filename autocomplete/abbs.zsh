@@ -1,3 +1,4 @@
-autoload -U +X compinit && compinit
-autoload -U +X bashcompinit && bashcompinit
-source /usr/share/bash-completion/completions/abbs 
+#compdef abbs
+
+_arguments "1: :(newBlog newDir newEntry list delete edit compile help)" 
+

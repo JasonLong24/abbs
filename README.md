@@ -3,11 +3,12 @@ abbs is a blazing fast and simple blogging system.
 
 ## Installation
 #### Dependencies
+
 - [Pandoc](https://github.com/jgm/pandoc)
 
-Symlink abbs.sh to `/usr/bin`
+Run the `install.sh` script.
 ```
-ln -s abbs.sh /usr/bin
+./install.sh
 ```
 
 ## Usage
@@ -33,7 +34,7 @@ See example
 
 ## Update
 
-Just pull from the master branch of this project. The symlink should update.
+Run the `install.sh` script with the -u argument.
 ```
-git pull origin master
+./install.sh -u
 ```
