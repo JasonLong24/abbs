@@ -18,7 +18,7 @@ body {
   font-size: 95%;
   margin-bottom: 1em;
   padding: 20px;
-  width: auto;
+  width: 75%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -33,6 +33,12 @@ body {
   transform: rotate(180deg);
 }
 
+.toc-items {
+  padding: 10px 15px;
+  border-bottom: 1px solid #aaa;
+  margin-bottom: -1px;
+}
+
 .toc-container a {
   text-decoration: none;
   color: #3366BB;
@@ -44,4 +50,9 @@ body {
   border: 1px solid #ddd; 
   margin-bottom: 12px;
   border-radius: 10px;
+}
+
+#contentsFilter:focus {
+  border: 1px solid #66afe9;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
 }

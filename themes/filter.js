@@ -1,8 +1,8 @@
-function filter() {
+function filter(ulID) {
   var input, filter, ul, li, a, i;
   input = document.getElementById("contentsFilter");
   filter = input.value.toUpperCase();
-  ul = document.getElementById("toc");
+  ul = document.getElementById(ulID);
   li = ul.getElementsByTagName("li");
   for (i = 0; i < li.length; i++) {
     a = li[i].getElementsByTagName("a")[0];

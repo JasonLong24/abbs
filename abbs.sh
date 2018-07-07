@@ -148,6 +148,7 @@ function compile() {
     read -p "Do you want to generate an index.html file? (y/n)" -n 1;
     if [[ $REPLY =~ ^[Yy]$ ]]; then
       touch build/index.html
+      echo -e "<script charset=\"utf-8\" src=\"filter.js\"></script>" >> build/index.html
       echo -e "<link rel="stylesheet" href="style.css">" >> build/index.html
       echo -e "<div class=\"toc-container\">" >> build/index.html
       echo -e "<p class=\"toc-title\">Blogs</p>" >> build/index.html
@@ -184,7 +185,7 @@ function compile() {
          fi
       done
       sed -i '1s@^@<ul id=\"toc\">\n@' build/$filename.html
-      sed -i '1s@^@<input type=\"text\" id=\"contentsFilter\" onkeyup=\"filter()\" placeholder=\"Search Posts... \">\n@' build/$filename.html
+      sed -i "1s@^@<input type=\"text\" id=\"contentsFilter\" onkeyup=\'filter(\"toc\")\' placeholder=\"Search Posts... \">\n@" build/$filename.html
       sed -i '1s@^@<p class=\"toc-title\">Contents</p>\n@' build/$filename.html
       sed -i '1s@^@<div class=\"toc-container\">\n@' build/$filename.html
       sed -i '1s@^@<script charset=\"utf-8\" src=\"filter.js\"></script>\n@' build/$filename.html
@@ -192,10 +193,36 @@ function compile() {
 
     if [[ -f build/index.html ]]; then
       echo "</ul>" >> build/index.html 
-      echo "</div>" >> build/index.html 
+      echo "<hr>" >> build/index.html
+      echo "<p class=\"toc-title\">All Posts</p>" >> build/index.html
+      echo "<input type=\"text\" id=\"contentsFilter\" onkeyup='filter(\""allposts-toc"\")' placeholder=\"Search All Posts... \" />" >> build/index.html
+      echo "<ul id=\"allposts-toc\">" >> build/index.html
+      allPosts
     fi
 
   fi
+}
+
+function allPosts() {
+  for ((n=1;n<$dirCount;n++)) do
+    filename=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
+    tocCount=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | wc -l)
+    sectionCount=""
+    count=1
+    for ((i=1;i<=$tocCount;i++)); do
+      tocItems=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | awk FNR==$i | awk '{$1=$1};1')
+      if [[ $(echo $tocItems | head -c1) =~ ^[0-9]+$ ]]; then
+        output="<li class=\"toc-items\"><a href=\"$filename.html#section$sectionCount\">$tocItems</a></li>"
+        echo $output >> build/index.html
+        sectionCount="-"$count
+        count=$((count+1))
+      else
+        output="<li class=\"toc-items\"><a href=\"$filename.html#$(echo $tocItems | tr '[:upper:]' '[:lower:]' | tr ' ' '-')\">$tocItems</a></li>"
+        echo $output >> build/index.html
+      fi
+    done
+  done
+  echo -e "</ul>\n</div>" >> build/index.html
 }
 
 function help() {
