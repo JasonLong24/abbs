@@ -151,8 +151,7 @@ function compile() {
       echo -e "<script charset=\"utf-8\" src=\"filter.js\"></script>" >> build/index.html
       echo -e "<link rel="stylesheet" href="style.css">" >> build/index.html
       echo -e "<div class=\"toc-container\">" >> build/index.html
-      echo -e "<p class=\"toc-title\">Blogs</p>" >> build/index.html
-      echo -e "<ul class=\"toc\">" >> build/index.html
+      echo -e "<ul class=\"blogs\">" >> build/index.html
     fi
 
     dirCount=$(echo */ | wc | awk '{print $2}' | tr -d ' ')
@@ -193,7 +192,6 @@ function compile() {
 
     if [[ -f build/index.html ]]; then
       echo "</ul>" >> build/index.html 
-      echo "<hr>" >> build/index.html
       echo "<p class=\"toc-title\">All Posts</p>" >> build/index.html
       echo "<input type=\"text\" id=\"contentsFilter\" onkeyup='filter(\""allposts-toc"\")' placeholder=\"Search All Posts... \" />" >> build/index.html
       echo "<ul id=\"allposts-toc\">" >> build/index.html

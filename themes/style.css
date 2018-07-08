@@ -44,6 +44,33 @@ body {
   color: #3366BB;
 }
 
+.blogs {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  background-color: #f1f1f1;
+  width: -moz-fit-content;
+  border: 1px #aaa solid;
+}
+
+.blogs li {
+  float: right;
+}
+
+.blogs li a {
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+.blogs li a:hover {
+  background-color: #555;
+  color: white;
+}
+
 #contentsFilter {
   width: 100%; 
   padding: 8px 8px 8px 8px; 
