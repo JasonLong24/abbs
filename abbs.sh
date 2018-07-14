@@ -204,11 +204,11 @@ function compile() {
 function allPosts() {
   for ((n=1;n<$dirCount;n++)) do
     filename=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
-    tocCount=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | wc -l)
+    tocCount=$(cat $filename/*.md | grep -A 1 "<"div | grep "#" | awk '{$1=""; print $0}' | wc -l)
     sectionCount=""
     count=1
     for ((i=1;i<=$tocCount;i++)); do
-      tocItems=$(cat $filename/*.md | grep "#" | grep -v "##" | awk '{$1=""; print $0}' | awk FNR==$i | awk '{$1=$1};1')
+      tocItems=$(cat $filename/*.md | grep -A 1 "<"div | grep "#" | awk '{$1=""; print $0}' | awk FNR==$i | awk '{$1=$1};1')
       if [[ $(echo $tocItems | head -c1) =~ ^[0-9]+$ ]]; then
         output="<li class=\"toc-items\"><a href=\"$filename.html#section$sectionCount\">$tocItems</a></li>"
         echo $output >> build/index.html
