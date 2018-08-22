@@ -110,3 +110,11 @@ div.sourceCode {
   width: auto;
   padding-right: 10px;
 }
+
+code > span.kw {
+  color: #228b22;
+}
+
+code > span.ot {
+  color: #228b22;
+}
