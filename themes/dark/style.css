@@ -111,6 +111,15 @@ div.sourceCode {
   padding-right: 10px;
 }
 
+footer {
+  color: #c9c9c9;
+  font-size: 11px;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  padding-bottom: 3px;
+}
+
 code > span.kw {
   color: #228b22;
 }

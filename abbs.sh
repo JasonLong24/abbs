@@ -188,6 +188,7 @@ function compile() {
       sed -i '1s@^@<p class=\"toc-title\">Contents</p>\n@' build/$filename.html
       sed -i '1s@^@<div class=\"toc-container\">\n@' build/$filename.html
       sed -i '1s@^@<script charset=\"utf-8\" src=\"filter.js\"></script>\n@' build/$filename.html
+      echo "<footer>Last Updated: $(date +'%d/%m/%Y')</footer>" >> build/$filename.html
     done
 
     if [[ -f build/index.html ]]; then
@@ -196,6 +197,7 @@ function compile() {
       echo "<input type=\"text\" id=\"contentsFilter\" onkeyup='filter(\""allposts-toc"\")' placeholder=\"Search All Posts... \" />" >> build/index.html
       echo "<ul id=\"allposts-toc\">" >> build/index.html
       allPosts
+      echo "<footer>Last Updated: $(date +'%d/%m/%Y')</footer>" >> build/index.html
     fi
 
   fi
