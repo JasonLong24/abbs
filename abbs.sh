@@ -3,6 +3,7 @@
 path=$(pwd)
 files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
 directories=$(find . -type d | tr -d "./" | grep -vwE build | nl -w2)
+title=$(cat .blog | grep -w title | cut -d= -f2- | sed "s/^[ \t]*//")
 confContent=$(cat .blog)
 
 reset=$(tput sgr0 2>/dev/null)
@@ -189,10 +190,12 @@ function compile() {
       sed -i '1s@^@<p class=\"toc-title\">Contents</p>\n@' build/$filename.html
       sed -i '1s@^@<div class=\"toc-container\">\n@' build/$filename.html
       sed -i '1s@^@<script charset=\"utf-8\" src=\"filter.js\"></script>\n@' build/$filename.html
+      sed -i "1s@^@<title>$title</title>\n@" build/$filename.html
       checkFooter $filename
     done
 
     if [[ -f build/index.html ]]; then
+      sed -i "1s@^@<title>$title</title>\n@" build/index.html
       echo "</ul>" >> build/index.html 
       echo "<p class=\"toc-title\">All Posts</p>" >> build/index.html
       echo "<input type=\"text\" id=\"contentsFilter\" onkeyup='filter(\""allposts-toc"\")' placeholder=\"Search All Posts... \" />" >> build/index.html

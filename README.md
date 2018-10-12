@@ -34,11 +34,13 @@ See example
 
 Config file `.blog`
 
-```
+```sh
 # Generate index.html
 index = true
 # Last updated footer
 footer = true
+# Set title of page
+title = My Blog
 ```
 
 ## Update
