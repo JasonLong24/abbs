@@ -32,6 +32,15 @@ See example
       -d               Path to directory of theme.
 ```
 
+Config file `.blog`
+
+```
+# Generate index.html
+index = true
+# Last updated footer
+footer = true
+```
+
 ## Update
 
 Run the `install.sh` script with the -u argument.

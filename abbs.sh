@@ -3,6 +3,7 @@
 path=$(pwd)
 files=$(find . -path ./build -prune -o -name '*.md' -type f -printf "%T@ %p\n" | cut -d\  -f2- | nl -w2)
 directories=$(find . -type d | tr -d "./" | grep -vwE build | nl -w2)
+confContent=$(cat .blog)
 
 reset=$(tput sgr0 2>/dev/null)
 red=$(tput setaf 1 2>/dev/null)  
@@ -145,8 +146,9 @@ function compile() {
       cp $2 $path/build/style.css 
     fi
 
-    read -p "Do you want to generate an index.html file? (y/n)" -n 1;
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
+    indexState=$(echo "$confContent" | grep -w index | cut -d= -f2- | tr -d ' ')
+    if [[ $indexState = true ]]; then
+      echo Generating... index
       touch build/index.html
       echo -e "<script charset=\"utf-8\" src=\"filter.js\"></script>" >> build/index.html
       echo -e "<link rel="stylesheet" href="style.css">" >> build/index.html
@@ -155,14 +157,13 @@ function compile() {
     fi
 
     dirCount=$(echo */ | wc | awk '{print $2}' | tr -d ' ')
-    echo $fileCount
     for ((n=1;n<$dirCount;n++))
     do
       filename=$(echo */ | tr -d '/' | sed -e 's/build //g' | awk '{print $number}' number=$n)
       echo Compiling... $filename
       pandoc -f markdown -t html5 -o build/$filename.html $filename/*.md -c style.css
 
-      if [[ $REPLY =~ ^[Yy]$ ]]; then
+      if [[ $indexState = true ]]; then
         echo -e "\t <li><a href="$filename.html">"$filename"</a></li>" >> build/index.html
       fi
 
@@ -188,7 +189,7 @@ function compile() {
       sed -i '1s@^@<p class=\"toc-title\">Contents</p>\n@' build/$filename.html
       sed -i '1s@^@<div class=\"toc-container\">\n@' build/$filename.html
       sed -i '1s@^@<script charset=\"utf-8\" src=\"filter.js\"></script>\n@' build/$filename.html
-      echo "<footer>Last Updated: $(date +'%d/%m/%Y')</footer>" >> build/$filename.html
+      checkFooter $filename
     done
 
     if [[ -f build/index.html ]]; then
@@ -197,7 +198,7 @@ function compile() {
       echo "<input type=\"text\" id=\"contentsFilter\" onkeyup='filter(\""allposts-toc"\")' placeholder=\"Search All Posts... \" />" >> build/index.html
       echo "<ul id=\"allposts-toc\">" >> build/index.html
       allPosts
-      echo "<footer>Last Updated: $(date +'%d/%m/%Y')</footer>" >> build/index.html
+      checkFooter index
     fi
 
   fi
@@ -223,6 +224,13 @@ function allPosts() {
     done
   done
   echo -e "</ul>\n</div>" >> build/index.html
+}
+
+function checkFooter() {
+  footerState=$(echo "$confContent" | grep -w footer | cut -d= -f2- | tr -d ' ')
+  if [[ $footerState = "true" ]]; then
+    echo "<footer>Last Updated: $(date +'%d/%m/%Y')</footer>" >> build/$1.html
+  fi
 }
 
 function help() {
