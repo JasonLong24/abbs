@@ -1,14 +1,16 @@
 body {
-  background: #2b2b2b;
+  background: #111;
   min-width: 1024px;
 }
 
 .post {
-  background: #424242;
-  border-left: 30px solid black;
+  background: #1a1a1a;
+  border: 1px solid #c9c9c9;
+  border-left: 15px solid;
   border-radius: 5px;
   margin: 25px 150px 25px 150px;
-  padding: 2px 2px 2px 10px; 
+  padding: 2px 2px 2px 10px;
+  color: #c9c9c9;
 }
 
 .post h1 {
@@ -16,8 +18,8 @@ body {
 }
 
 .toc-container {
-  background: #2d2d2d none repeat scroll 0 0;
-  border: 1px solid #000;
+  background: #111 none repeat scroll 0 0;
+  border: 1px solid #c9c9c9;
   display: table;
   font-size: 95%;
   margin-bottom: 1em;
@@ -40,7 +42,7 @@ body {
 
 .toc-items {
   padding: 10px 15px;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid #c9c9c9;
   margin-bottom: -1px;
 }
 
@@ -73,6 +75,8 @@ body {
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
+  border: solid 1px #c9c9c9;
+  background: #111;
 }
 
 .blogs li a:hover {
@@ -81,12 +85,12 @@ body {
 }
 
 #contentsFilter {
-  width: 100%; 
-  padding: 8px 8px 8px 8px; 
-  border: 1px solid #000; 
+  width: 100%;
+  padding: 8px 8px 8px 8px;
+  border: 1px solid #c9c9c9;
   margin-bottom: 12px;
   border-radius: 10px;
-  background-color: #2b2b2b;
+  background-color: #111;
   color: #c9c9c9;
 }
 
@@ -103,7 +107,8 @@ td.lineNumbers {
 }
 
 tr.sourceCode {
-  background: #424242;
+  background: #1a1a1a;
+  color: #c9c9c9;
 }
 
 div.sourceCode {
@@ -127,3 +132,6 @@ code > span.kw {
 code > span.ot {
   color: #228b22;
 }
+
+code > span.fu { color: #4070a0 }
+code > span.va { color: #4070a0 }
